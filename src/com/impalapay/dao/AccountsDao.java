@@ -20,16 +20,16 @@ public class AccountsDao {
 		connection = DBUtility.getConnection();
 	}
 
-	public void addUser(User user) {
+	public void addAccounts(Accounts accounts) {
 		try {
 			
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("insert into tblUser(userid,firstname,lastname,email) values (?,?, ?, ? )");
 			// Parameters start with 1
-			preparedStatement.setInt(1, user.getUserid());
-			preparedStatement.setString(2, user.getFirstName());
-			preparedStatement.setString(3, user.getLastName());			
-			preparedStatement.setString(4, user.getEmail());
+			preparedStatement.setInt(1, accounts.getUserid());
+			preparedStatement.setString(2, accounts.getFirstName());
+			preparedStatement.setString(3, accounts.getLastName());			
+			preparedStatement.setString(4, accounts.getEmail());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -49,15 +49,15 @@ public class AccountsDao {
 		}
 	}
 	
-	public void updateUser(User user) throws ParseException {
+	public void updateUser(Accounts accounts) throws ParseException {
 		try {
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("update tblUser set lastname=?,email=?" +
 							"where userid=?");
 			// Parameters start with 1			
-			preparedStatement.setString(1, user.getLastName());
-			preparedStatement.setString(2, user.getEmail());			
-			preparedStatement.setInt(3, user.getUserid());
+			preparedStatement.setString(1, accounts.getLastName());
+			preparedStatement.setString(2, accounts.getEmail());			
+			preparedStatement.setInt(3, accounts.getUserid());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -65,28 +65,28 @@ public class AccountsDao {
 		}
 	}
 
-	public List<User> getAllUsers() {
-		List<User> users = new ArrayList<User>();
+	public List<Accounts> getAllUsers() {
+		List<Accounts> accounts = new ArrayList<Accounts>();
 		try {
 			Statement statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("select * from tblUser");
 			while (rs.next()) {
-				User user = new User();
-				user.setUserid(rs.getInt("userid"));
-				user.setFirstName(rs.getString("firstname"));
-				user.setLastName(rs.getString("lastname"));				
-				user.setEmail(rs.getString("email"));
-				users.add(user);
+				Accounts account = new Accounts();
+				account.setUserid(rs.getInt("userid"));
+				account.setFirstName(rs.getString("firstname"));
+				account.setLastName(rs.getString("lastname"));				
+				account.setEmail(rs.getString("email"));
+				accounts.add(account);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return users;
+		return accounts;
 	}
 	
-	public User getUserById(int userId) {
-		User user = new User();
+	public Accounts getUserById(int userId) {
+		Accounts accounts = new Accounts();
 		try {
 			PreparedStatement preparedStatement = connection.
 					prepareStatement("select * from tblUser where userid=?");
@@ -94,16 +94,16 @@ public class AccountsDao {
 			ResultSet rs = preparedStatement.executeQuery();
 			
 			if (rs.next()) {
-				user.setUserid(rs.getInt("userid"));
-				user.setFirstName(rs.getString("firstname"));
-				user.setLastName(rs.getString("lastname"));
+				accounts.setUserid(rs.getInt("userid"));
+				accounts.setFirstName(rs.getString("firstname"));
+				accounts.setLastName(rs.getString("lastname"));
 				
-				user.setEmail(rs.getString("email"));
+				accounts.setEmail(rs.getString("email"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return user;
+		return accounts;
 	}
 
 }

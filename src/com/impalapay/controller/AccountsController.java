@@ -19,10 +19,10 @@ import com.impalapay.model.Accounts;
 
 public class AccountsController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private CrudDao dao;
+	private AccountsDao dao;
     
-    public CRUDController() {
-        dao=new CrudDao();
+    public AccountsController() {
+        dao=new AccountsDao();
     }
 
 
@@ -33,7 +33,7 @@ public class AccountsController extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(request.getParameter("action")!=null){
-			List<User> lstUser=new ArrayList<User>();
+			List<Accounts> lstAccounts=new ArrayList<Accounts>();
 			String action=(String)request.getParameter("action");
 			Gson gson = new Gson();
 			response.setContentType("application/json");
@@ -41,9 +41,9 @@ public class AccountsController extends HttpServlet {
 			if(action.equals("list")){
 				try{						
 				//Fetch Data from User Table
-				lstUser=dao.getAllUsers();			
+				lstAccounts=dao.getAllUsers();			
 				//Convert Java Object to Json				
-				JsonElement element = gson.toJsonTree(lstUser, new TypeToken<List<User>>() {}.getType());
+				JsonElement element = gson.toJsonTree(lstAccounts, new TypeToken<List<Accounts>>() {}.getType());
 				JsonArray jsonArray = element.getAsJsonArray();
 				String listData=jsonArray.toString();				
 				//Return Json in the format required by jTable plugin
@@ -56,34 +56,35 @@ public class AccountsController extends HttpServlet {
 				}				
 			}
 			else if(action.equals("create") || action.equals("update")){
-				User user=new User();
+				Accounts accounts=new Accounts();
 				if(request.getParameter("userid")!=null){				   
 				   int userid=Integer.parseInt(request.getParameter("userid"));
-				   user.setUserid(userid);
+				   accounts.setUserid(userid);
 				}
 				if(request.getParameter("firstName")!=null){
 					String firstname=(String)request.getParameter("firstName");
-					user.setFirstName(firstname);
+					accounts.setFirstName(firstname);
 				}
 				if(request.getParameter("lastName")!=null){
 				   String lastname=(String)request.getParameter("lastName");
-				   user.setLastName(lastname);
+				   accounts.setLastName(lastname);
 				}
 				if(request.getParameter("email")!=null){
 				   String email=(String)request.getParameter("email");
-				   user.setEmail(email);
+				   accounts.setEmail(email);
 				}
 				try{											
 					if(action.equals("create")){//Create new record
-						dao.addUser(user);					
-						lstUser.add(user);
+						//dao.addUser(user);	
+						dao.addAccounts(accounts);
+						lstAccounts.add(accounts);
 						//Convert Java Object to Json				
-						String json=gson.toJson(user);					
+						String json=gson.toJson(accounts);					
 						//Return Json in the format required by jTable plugin
 						String listData="{\"Result\":\"OK\",\"Record\":"+json+"}";											
 						response.getWriter().print(listData);
 					}else if(action.equals("update")){//Update existing record
-						dao.updateUser(user);
+						dao.updateUser(accounts);
 						String listData="{\"Result\":\"OK\"}";									
 						response.getWriter().print(listData);
 					}
